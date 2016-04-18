@@ -12,55 +12,53 @@
 
 #include "fdf.h"
 
-void				fill_map(t_params *params, t_list *lst)
+t_vertices			*save_vec(t_params *p, char *line, t_vertices *pp,
+							  t_vertices **save)
 {
-	t_vec			index;
-	t_vec			tmp;
+	char			**str_split;
+	t_vertices		*ret;
+	t_vertices		*tmp;
 
-	index = (t_vec){.x = 0, .y = 0, .z = 0};
-	if (!(params->map.map = (t_vec **)malloc(sizeof(t_vec *) *
-	params->map.max.y)))
+	if ((ret = (t_vertices *)malloc(sizeof(t_vertices))) == NULL)
 		malloc_error();
-	while (index.y < params->map.max.y)
+	tmp = ret;
+	p->t_x = 0;
+	str_split = ft_strsplit(line, ' ');
+	while (str_split[p.t_x] != 0)
 	{
-		if (!(params->map.map[index.y] =
-			(t_vec *)malloc(sizeof(t_vec) * params->map.max.x)))
+		save->ver->p_point = pp->point;
+		save->ver->point.x = tmp->point.x = p->t_x;
+		save->ver->point.y = tmp->point.y = p->t_y;
+		save->ver->point.x = tmp->point.z = ft_atoi(str_split[p->t_x]);
+		if ((save->ver->next =
+			ret->next = (t_vertices *)malloc(sizeof(t_vertices))) == NULL)
 			malloc_error();
-		++index.y;
+		pp = pp->next;
+		save = save->next;
+		++p->t_x;
 	}
-	while (lst)
-	{
-		tmp = *((t_vec *)lst->content);
-		params->map.map[tmp.y][tmp.x] = tmp;
-		lst = lst->next;
-	}
+	return(ret);
 }
 
-void				read_map(t_params *params, char *path)
+void				read_map(t_params *p, char *path)
 {
-	t_vec			file;
-	t_list			*tmp;
+	int				fd;
 	char			*line;
-	char			**tmp_x;
+	t_vec			*p_points;
 
-	tmp = NULL;
-	file.x = open(path, O_RDONLY);
-	params->map.max.y = 0;
-	while ((file.y = get_next_line(file.x, &line)) > 0)
+	p_points = NULL;
+	if ((fd = open(path, O_RDONLY)) == -1)
+		open_error();
+	if ((p->obj->ver = (t_vertices *)malloc(sizeof(t_vertices))) == NULL)
+		malloc_error();
+	p->save = p->obj->ver;
+	while (gnl_error(get_next_line(fd, &line)) > 0)
 	{
-		gnl_error(file.y);
-		tmp_x = ft_strsplit(line, ' ');
-		params->map.max.x = 0;
-		while (tmp_x[params->map.max.x])
-		{
-			params->map.max.z = -ft_atoi(tmp_x[params->map.max.x]);
-			ft_lstadd(&tmp, ft_lstnew(&params->map.max, sizeof(t_vec)));
-			++params->map.max.x;
-		}
-		++params->map.max.y;
+		p_points = save_vec(p, line, p_points, &save_a);
+		++p->t_y;
 	}
-	fill_map(params, tmp);
-	close(file.x);
+	save->next = NULL;
+	close(fd);
 }
 
 t_vec				get_2d_map(t_vec map)

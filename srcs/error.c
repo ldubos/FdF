@@ -27,13 +27,14 @@ void				open_error()
 	exit(1);
 }
 
-void				gnl_error(int err)
+int					gnl_error(int err)
 {
 	if (err < 0)
 	{
 		ft_putendl_fd("\a\033[1;31;40mRead file error.\033[0m", 2);
 		exit(1);
 	}
+	return (err);
 }
 
 void				malloc_error()
