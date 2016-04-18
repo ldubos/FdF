@@ -16,30 +16,29 @@
 void				init_params(t_params *params)
 {
 	params->zoom = 6;
-	params->alt = 3;
+	params->alt = 2;
 	params->offset.x = 0;
 	params->offset.y = 0;
-	params->redraw = 1;
 }
 
 int					main(int argc, char **argv)
 {
-	t_params		params;
+	t_params		e;
 
 	arg_error(argc);
-	read_map(&params, argv[1]);
-	init_params(&params);
+	read_map(&e, argv[1]);
+	init_params(&e);
 	params.e.mlx = mlx_init();
-	params.e.win = mlx_new_window(params.e.mlx, WIDTH, HEIGHT, "FdF @42");
-	params.img.img = mlx_new_image(params.e.mlx, params.map.max.x * 8,
-		params.map.max.x * 8);
-	params.img.data = mlx_get_data_addr(params.img.img, &params.img.bpp,
-						&params.img.size_line, &params.img.endian);
-	mlx_put_image_to_window(params.e.mlx, params.e.win, params.img.img,
-		params.offset.x, params.offset.y);
-	mlx_key_hook(params.e.win, key_hook, &params);
-	mlx_loop_hook(params.e.mlx, loop_hook, &params);
-//	mlx_hook(params.e.win, KeyPress, KeyPressMask, key_hook, &params);
-	mlx_loop(params.e.mlx);
+	params.e.win = mlx_new_window(e.mlx, WIDTH, HEIGHT,
+		ft_strcat("FdF @42 ", argv[1]));
+	params.img.img = mlx_new_image(e.mlx, WIDTH, HEIGHT);
+	params.img.data = mlx_get_data_addr(e.img.img, &e.img.bpp,
+		&e.img.size_line, &e.img.endian);
+	mlx_put_image_to_window(e.mlx, e.win, e.img.img,
+		e.offset.x, e.offset.y);
+	mlx_key_hook(e.win, key_hook, &e);
+	mlx_loop_hook(e.mlx, loop_hook, &e);
+//	mlx_hook(e.win, KeyPress, KeyPressMask, key_hook, &e);
+	mlx_loop(e.mlx);
 	return (0);
 }

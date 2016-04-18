@@ -55,14 +55,14 @@ void				draw_line_ptb(t_img *img, t_vec a, t_vec b,
 
 }
 
-void				draw_line(t_params *params, t_vec a, t_vec b, int color)
+void				draw_line(t_params *e, t_vec a, t_vec b, int color)
 {
 	t_vec			p;
 
-	a.x = a.x * params->zoom;
-	a.y = a.y * params->zoom;
-	b.x = b.x * params->zoom;
-	b.y = b.y * params->zoom;
+	a.x = a.x * e->zoom;
+	a.y = a.y * e->zoom;
+	b.x = b.x * e->zoom;
+	b.y = b.y * e->zoom;
 
 	p.x = a.x - b.x;
 	p.y = a.y - b.y;
@@ -72,29 +72,30 @@ void				draw_line(t_params *params, t_vec a, t_vec b, int color)
 		p.y = -p.y;
 	if (p.x > p.y)
 		if (a.x <= b.x)
-			draw_line_pta(&params->img, a, b, color);
+			draw_line_pta(&e->img, a, b, color);
 		else
-			draw_line_pta(&params->img, b, a, color);
+			draw_line_pta(&e->img, b, a, color);
 	else
 		if (a.y < b.y)
-			draw_line_ptb(&params->img, a, b, color);
+			draw_line_ptb(&e->img, a, b, color);
 		else
-			draw_line_ptb(&params->img, b, a, color);
+			draw_line_ptb(&e->img, b, a, color);
 }
 
-void				draw_map(t_params *params)
+void				draw_obj(t_params *e)
 {
 	t_vertices		*ver;
 
-	ver = params->obj->ver;
+	ver = e->obj->ver;
 	while (ver != NULL)
 	{
-		draw_line(params, get_2d_map(params->obj->ver->point),
-			get_2d_map(params->obj->ver->next->point));
-		if (params->obj->ver->point.y > 0)
+		draw_line(e, get_2d_map(e->obj->ver->point),
+			get_2d_map(e->obj->ver->next->point));
+		if (e->obj->ver->point.y > 0)
 		{
-			draw_line(params, get_2d_map(params->obj->ver->point),
-				get_2d_map(params->obj->ver->p_point));
+			draw_line(e, get_2d_map(params->obj->ver->point),
+				get_2d_map(e->obj->ver->p_point));
 		}
+		ver = ver->next;
 	}
 }

@@ -13,18 +13,12 @@
 # define WIDTH 1920
 # define HEIGHT 1080
 
-typedef struct		s_env
-{
-	void			*mlx;
-	void			*win;
-}					t_env;
-
 typedef struct		s_img
 {
 	void			*img;
 	char			*data;
 	int				bpp;
-	int				size_line;
+	int				sl;
 	int				endian;
 }					t_img;
 
@@ -50,16 +44,17 @@ typedef struct		s_obj
 
 typedef struct		s_params
 {
-	t_env			e;
 	t_img			img;
 	t_obj			obj;
 	t_vec			offset;
-	t_vertices		*save;
+	t_vec			rot;
 	int				t_x;
 	int				t_y;
 	int				alt;
 	int				zoom;
 	int				redraw;
+	void			*mlx;
+	void			*win;
 }					t_params;
 
 /*
@@ -72,24 +67,24 @@ int					gnl_error(int err);
 void				malloc_error();
 
 /*
-** map.c
+** obj.c
 */
 
-void				read_map(t_params *params, char *path);
-t_vec				get_2d_map(t_vec point);
+void				read_obj(t_params *e, char *path);
+t_vec				3d_obj_to_iso(t_vec vertex);
 
 /*
 ** hook.h
 */
 
 int					key_hook(int keycode, t_params *params);
-int					loop_hook(t_params *params);
+int					loop_hook(t_params *e);
 
 /*
 ** draw.c
 */
 
-void				draw_line(t_params *params, t_vec a, t_vec b, int color);
-void				draw_map(t_params *params);
+void				draw_line(t_params *e, t_vec a, t_vec b, int color);
+void				draw_obj(t_params *e);
 
 #endif
