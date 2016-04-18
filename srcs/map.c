@@ -46,22 +46,24 @@ void				read_map(t_params *p, char *path)
 	char			*line;
 	t_vec			*p_points;
 
-	p_points = NULL;
 	if ((fd = open(path, O_RDONLY)) == -1)
 		open_error();
 	if ((p->obj->ver = (t_vertices *)malloc(sizeof(t_vertices))) == NULL)
 		malloc_error();
 	p->save = p->obj->ver;
+	p_points = NULL;
 	while (gnl_error(get_next_line(fd, &line)) > 0)
 	{
 		p_points = save_vec(p, line, p_points, &save_a);
 		++p->t_y;
 	}
 	save->next = NULL;
+	free(p->save);
+	free(p_points);
 	close(fd);
 }
 
-t_vec				get_2d_map(t_vec map)
+t_vec				get_2d_map(t_vec point)
 {
 	t_vec			ret;
 

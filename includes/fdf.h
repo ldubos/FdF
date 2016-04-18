@@ -35,18 +35,28 @@ typedef struct		s_vec
 	int				z;
 }					t_vec;
 
-typedef struct		s_map
+typedef struct		s_vertices
 {
-	t_vec			**map;
-	t_vec			max;
-}					t_map;
+	t_vec			p_point;
+	t_vec			point;
+	s_vertices		*next;
+}
+
+typedef struct		s_obj
+{
+	t_vec			origin;
+	t_vertices		*ver;
+}					t_obj;
 
 typedef struct		s_params
 {
 	t_env			e;
 	t_img			img;
-	t_map			map;
+	t_obj			obj;
 	t_vec			offset;
+	t_vertices		*save;
+	int				t_x;
+	int				t_y;
 	int				alt;
 	int				zoom;
 	int				redraw;
@@ -58,15 +68,15 @@ typedef struct		s_params
 
 void				arg_error(int argc);
 void				open_error();
-void				gnl_error(int err);
+int					gnl_error(int err);
 void				malloc_error();
 
 /*
 ** map.c
 */
 
-void				read_map(t_params *params, char *file);
-t_vec				get_2d_map(t_vec map);
+void				read_map(t_params *params, char *path);
+t_vec				get_2d_map(t_vec point);
 
 /*
 ** hook.h

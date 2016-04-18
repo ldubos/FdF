@@ -17,7 +17,7 @@ void				put_pixel(t_img *img, t_vec p, int color)
 {
 	char			*pixel;
 
-	if ((p.x < WIDTH && p.x < HEIGHT) && (p.x >= 0 && p.y >= 0))
+	if ((p.x < WIDTH && p.y < HEIGHT) && (p.x >= 0 && p.y >= 0))
 	{
 		pixel = img->data + p.y * img->size_line + (img->bpp / 8) * p.x;
 		pixel[2] = (char)(color >> 16);
@@ -84,24 +84,17 @@ void				draw_line(t_params *params, t_vec a, t_vec b, int color)
 
 void				draw_map(t_params *params)
 {
-	int				x;
-	int				y;
-	int				color;
+	t_vertices		*ver;
 
-	y = 0;
-	while (y < params->map.max.y)
+	ver = params->obj->ver;
+	while (ver != NULL)
 	{
-		x = 0;
-		while (x < params->map.max.x)
+		draw_line(params, get_2d_map(params->obj->ver->point),
+			get_2d_map(params->obj->ver->next->point));
+		if (params->obj->ver->point.y > 0)
 		{
-			if (x > 0)
-				draw_line(params, get_2d_map(params->map.map[y][x]),
-					get_2d_map(params->map.map[y][x - 1]), 0xFF5588);
-			if (y > 0 || (y > 0 && x == 0))
-				draw_line(params, get_2d_map(params->map.map[y][x]),
-					get_2d_map(params->map.map[y - 1][x]), 0xAAFFCC);
-			++x;
+			draw_line(params, get_2d_map(params->obj->ver->point),
+				get_2d_map(params->obj->ver->p_point));
 		}
-		++y;
 	}
 }
