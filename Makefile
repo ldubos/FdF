@@ -12,16 +12,17 @@
 
 export CFLAGS=#-Wall -Wextra -Werror
 NAME=fdf
+MLX=-lmlx -framework OpenGL -framework AppKit
 SRCS_DIR=srcs/
 SRCS=$(SRCS_DIR)main.c \
 	 $(SRCS_DIR)get_next_line.c \
 	 $(SRCS_DIR)error.c \
-	 $(SRCS_DIR)map.c \
+	 $(SRCS_DIR)obj.c \
 	 $(SRCS_DIR)hook.c \
 	 $(SRCS_DIR)draw.c
 OBJS=$(SRCS:.c=.o)
 	INC_DIR=-I./includes/ -I./libft/includes/
-	LIB_DIR=-L./libft -lft -L./minilibx -lmlx -framework OpenGL -framework AppKit
+	LIB_DIR=-L./libft -lft -L./minilibx $(MLX)
 	LIB_MAKE=libft/
 
 all		: $(NAME)

@@ -64,7 +64,7 @@ void				read_obj(t_params *e, char *path)
 	close(fd);
 }
 
-t_vec				3d_obj_to_iso(t_vec vertex)
+t_vec				obj_to_iso(t_vec vertex)
 {
 	t_vec			ret;
 

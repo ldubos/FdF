@@ -89,12 +89,12 @@ void				draw_obj(t_params *e)
 	ver = e->obj->ver;
 	while (ver != NULL)
 	{
-		draw_line(e, get_2d_map(e->obj->ver->point),
-			get_2d_map(e->obj->ver->next->point));
+		draw_line(e, obj_to_iso(e->obj->ver->point),
+			obj_to_iso(e->obj->ver->next->point));
 		if (e->obj->ver->point.y > 0)
 		{
-			draw_line(e, get_2d_map(params->obj->ver->point),
-				get_2d_map(e->obj->ver->p_point));
+			draw_line(e, obj_to_iso(params->obj->ver->point),
+				obj_to_iso(e->obj->ver->p_point));
 		}
 		ver = ver->next;
 	}
