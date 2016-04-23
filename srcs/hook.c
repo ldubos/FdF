@@ -6,7 +6,7 @@
 /*   By: ldubos <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/20 15:37:17 by ldubos            #+#    #+#             */
-/*   Updated: 2016/01/20 15:46:40 by ldubos           ###   ########.fr       */
+/*   Updated: 2016/04/23 08:15:53 by ldubos           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,29 +27,29 @@ int					key_hook(int keycode, t_params *params)
 		params->offset.y += SPEED;
 	if (keycode == 69 || keycode == 78)
 	{
-		if (keycode == 69 && params-> zoom <= 20)
+		if (keycode == 69 && params->zoom <= 20)
 			params->zoom += 1;
 		if (keycode == 78 && params->zoom >= 1)
 			params->zoom -= 1;
 		ft_bzero(params->img.data, WIDTH * 4 * HEIGHT * 4 * 4);
-		draw_map(params);
+		draw_obj(params);
 	}
-	mlx_clear_window(params->e.mlx, params->e.win);
-	mlx_put_image_to_window(params->e.mlx, params->e.win, params->img.img,
+	mlx_clear_window(params->mlx, params->win);
+	mlx_put_image_to_window(params->mlx, params->win, params->img.img,
 		params->offset.x, params->offset.y);
 	return (0);
 }
 
 int					loop_hook(t_params *params)
 {
-	if (params->redraw == 1)
+/*	if (params->redraw == 1)
 	{
-		mlx_clear_window(params->e.mlx, params->e.win);
+		mlx_clear_window(params->mlx, params->win);
 		ft_bzero(params->img.data, WIDTH * 4 * HEIGHT * 4 * 4);
-		draw_map(params);
-		mlx_put_image_to_window(params->e.mlx, params->e.win, params->img.img,
+		draw_obj(params);
+		mlx_put_image_to_window(params->mlx, params->win, params->img.img,
 			params->offset.x, params->offset.y);
 		params->redraw = 0;
-	}
+	}*/
 	return (0);
 }

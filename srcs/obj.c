@@ -6,62 +6,77 @@
 /*   By: ldubos <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/20 11:03:32 by ldubos            #+#    #+#             */
-/*   Updated: 2016/02/01 12:11:29 by ldubos           ###   ########.fr       */
+/*   Updated: 2016/04/23 08:45:45 by ldubos           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
+#include <stdio.h>
 
-t_vertices			*save_vec(t_params *p, char *line, t_vertices *pp,
-							  t_vertices **save)
+void				save_vec(t_params *e, t_raw *raw)
 {
 	char			**str_split;
-	t_vertices		*ret;
-	t_vertices		*tmp;
 
-	if ((ret = (t_vertices *)malloc(sizeof(t_vertices))) == NULL)
+	if ((e->obj = (t_vec **)malloc(sizeof(t_vec *) * e->t_y)) == NULL)
 		malloc_error();
-	tmp = ret;
-	e->t_x = 0;
-	str_split = ft_strsplit(line, ' ');
+	str_split = ft_strsplit(raw->data, ' ');
 	while (str_split[e->t_x] != 0)
-	{
-		save->ver->p_point = pp->point;
-		save->ver->point.x = tmp->point.x = e->t_x;
-		save->ver->point.y = tmp->point.y = e->t_y;
-		save->ver->point.x = tmp->point.z = ft_atoi(str_split[e->t_x]);
-		if ((save->ver->next =
-			ret->next = (t_vertices *)malloc(sizeof(t_vertices))) == NULL)
-			malloc_error();
-		pp = pp->next;
-		save = save->next;
 		++e->t_x;
+	while (e->t_y-- > 0)
+		if ((e->obj[e->t_y] = (t_vec *)malloc(sizeof(t_vec) * e->t_x)) == NULL)
+			malloc_error();	
+	e->t_y = 0;
+	while (raw != NULL)
+	{
+		printf("raw =>\t\"%s\"\n", raw->data);
+		e->t_x = 0;
+		str_split = ft_strsplit(raw->data, ' ');
+		printf("\t\tOK (AFTER STR_SPLIT INIT)\n");
+		while (str_split[e->t_x] != 0)
+		{
+			e->obj[e->t_y][e->t_x].x = e->t_x;
+			e->obj[e->t_y][e->t_x].y = e->t_y;
+			e->obj[e->t_y][e->t_x].z = ft_atoi(str_split[e->t_x]);
+			++e->t_x;
+		}
+		printf("\t\tOK (AFTER LOOP STR_SPLIT)\n");
+		++e->t_y;
+		raw = raw->next;
+		(raw->next == NULL) ? printf("\t\tRAW->NEXT (NULL)\n") : printf("\t\tRAW->NEXT (NOT NULL)\n");
+		printf("\t\tOK (AFTER RAW->NEXT)\n");
 	}
-	return(ret);
+	printf("\t\tOK (AFTER LOOP RAW)\n");
 }
 
 void				read_obj(t_params *e, char *path)
 {
 	int				fd;
 	char			*line;
-	t_vec			*p_points;
-	t_vec			*save;
+	int				err;
+	t_raw			*raw;
+	t_raw			*tmp;
 
+	e->t_y = 0;
+	e->t_x = 0;
 	if ((fd = open(path, O_RDONLY)) == -1)
 		open_error();
-	if ((e->obj->ver = (t_vertices *)malloc(sizeof(t_vertices))) == NULL)
+	if ((raw = (t_raw *)malloc(sizeof(t_raw))) == NULL)
 		malloc_error();
-	save = e->obj->ver;
-	p_points = NULL;
-	while (gnl_error(get_next_line(fd, &line)) > 0)
+	tmp = raw;
+	while ((err = get_next_line(fd, &line)) > 0)
 	{
-		p_points = save_vec(e, line, p_points, &save);
+		gnl_error(err);
 		++e->t_y;
+		tmp->data = line;
+		if ((tmp->next = (t_raw *)malloc(sizeof(t_raw))) == NULL)
+			malloc_error();
+		tmp = tmp->next;
 	}
-	save->next = NULL;
-	free(e->save);
-	free(p_points);
+	tmp->next = NULL;
+	(tmp->next == NULL) ? printf("\t\tOK (TMP->NEXT == NULL)\n") : printf("\t\tKO (TMP->NEXT == NULL)\n");
+	free(tmp);
 	close(fd);
+	save_vec(e, raw);
 }
 
 t_vec				obj_to_iso(t_vec vertex)

@@ -29,23 +29,16 @@ typedef struct		s_vec
 	int				z;
 }					t_vec;
 
-typedef struct		s_vertices
+typedef struct		s_raw
 {
-	t_vec			p_point;
-	t_vec			point;
-	s_vertices		*next;
-}
-
-typedef struct		s_obj
-{
-	t_vec			origin;
-	t_vertices		*ver;
-}					t_obj;
+	char			*data;
+	struct s_raw	*next;
+}					t_raw;
 
 typedef struct		s_params
 {
 	t_img			img;
-	t_obj			obj;
+	t_vec			**obj;
 	t_vec			offset;
 	t_vec			rot;
 	int				t_x;

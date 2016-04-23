@@ -6,7 +6,7 @@
 /*   By: ldubos <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/20 14:56:59 by ldubos            #+#    #+#             */
-/*   Updated: 2016/01/29 15:15:47 by ldubos           ###   ########.fr       */
+/*   Updated: 2016/04/23 08:08:37 by ldubos           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void				put_pixel(t_img *img, t_vec p, int color)
 
 	if ((p.x < WIDTH && p.y < HEIGHT) && (p.x >= 0 && p.y >= 0))
 	{
-		pixel = img->data + p.y * img->size_line + (img->bpp / 8) * p.x;
+		pixel = img->data + p.y * img->sl + (img->bpp / 8) * p.x;
 		pixel[2] = (char)(color >> 16);
 		pixel[1] = (char)(color >> 8);
 		pixel[0] = (char)(color);
@@ -84,18 +84,23 @@ void				draw_line(t_params *e, t_vec a, t_vec b, int color)
 
 void				draw_obj(t_params *e)
 {
-	t_vertices		*ver;
+	int				x;
+	int				y;
 
-	ver = e->obj->ver;
-	while (ver != NULL)
+	y = 0;
+	while (y < e->t_y)
 	{
-		draw_line(e, obj_to_iso(e->obj->ver->point),
-			obj_to_iso(e->obj->ver->next->point));
-		if (e->obj->ver->point.y > 0)
+		x = 0;
+		while (x < e->t_x)
 		{
-			draw_line(e, obj_to_iso(params->obj->ver->point),
-				obj_to_iso(e->obj->ver->p_point));
+			if (x + 1 <= e->t_x)
+				draw_line(e, obj_to_iso(e->obj[y][x]),
+					obj_to_iso(e->obj[y][x + 1]), 0xFFFFFF);
+			if (y - 1 >= 0)
+				draw_line(e, obj_to_iso(e->obj[y][x]),
+					obj_to_iso(e->obj[y - 1][x]), 0xFF5555);
+			++x;
 		}
-		ver = ver->next;
+		++y;
 	}
 }
