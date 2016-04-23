@@ -6,7 +6,7 @@
 /*   By: ldubos <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/20 14:56:59 by ldubos            #+#    #+#             */
-/*   Updated: 2016/04/23 08:08:37 by ldubos           ###   ########.fr       */
+/*   Updated: 2016/04/23 09:49:45 by ldubos           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,11 +59,6 @@ void				draw_line(t_params *e, t_vec a, t_vec b, int color)
 {
 	t_vec			p;
 
-	a.x = a.x * e->zoom;
-	a.y = a.y * e->zoom;
-	b.x = b.x * e->zoom;
-	b.y = b.y * e->zoom;
-
 	p.x = a.x - b.x;
 	p.y = a.y - b.y;
 	if (p.x < 0)
@@ -94,11 +89,11 @@ void				draw_obj(t_params *e)
 		while (x < e->t_x)
 		{
 			if (x + 1 <= e->t_x)
-				draw_line(e, obj_to_iso(e->obj[y][x]),
-					obj_to_iso(e->obj[y][x + 1]), 0xFFFFFF);
+				draw_line(e, obj_to_iso(e, e->obj[y][x]),
+					obj_to_iso(e, e->obj[y][x + 1]), 0xFFFFFF);
 			if (y - 1 >= 0)
-				draw_line(e, obj_to_iso(e->obj[y][x]),
-					obj_to_iso(e->obj[y - 1][x]), 0xFF5555);
+				draw_line(e, obj_to_iso(e, e->obj[y][x]),
+					obj_to_iso(e, e->obj[y - 1][x]), 0xFF5555);
 			++x;
 		}
 		++y;

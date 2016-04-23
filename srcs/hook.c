@@ -6,7 +6,7 @@
 /*   By: ldubos <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/20 15:37:17 by ldubos            #+#    #+#             */
-/*   Updated: 2016/04/23 08:15:53 by ldubos           ###   ########.fr       */
+/*   Updated: 2016/04/23 09:33:09 by ldubos           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,12 +31,10 @@ int					key_hook(int keycode, t_params *params)
 			params->zoom += 1;
 		if (keycode == 78 && params->zoom >= 1)
 			params->zoom -= 1;
-		ft_bzero(params->img.data, WIDTH * 4 * HEIGHT * 4 * 4);
 		draw_obj(params);
 	}
 	mlx_clear_window(params->mlx, params->win);
-	mlx_put_image_to_window(params->mlx, params->win, params->img.img,
-		params->offset.x, params->offset.y);
+	mlx_put_image_to_window(params->mlx, params->win, params->img.img, 0, 0);
 	return (0);
 }
 

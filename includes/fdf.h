@@ -64,7 +64,7 @@ void				malloc_error();
 */
 
 void				read_obj(t_params *e, char *path);
-t_vec				obj_to_iso(t_vec vertex);
+t_vec				obj_to_iso(t_params *e, t_vec vertex);
 
 /*
 ** hook.h
