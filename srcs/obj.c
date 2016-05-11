@@ -1,105 +1,106 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   map.c                                              :+:      :+:    :+:   */
+/*   obj.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ldubos <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/20 11:03:32 by ldubos            #+#    #+#             */
-/*   Updated: 2016/04/23 09:50:55 by ldubos           ###   ########.fr       */
+/*   Updated: 2016/05/11 14:01:21 by ldubos           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
-#include <stdio.h>
 
-void				save_vec(t_params *e, t_raw *raw)
+t_obj				*save_vertices(t_conf *conf, t_obj **prev, char *line,
+	t_obj **obj)
 {
-	char			**str_split;
+	t_obj			*r_prev;
+	t_obj			*t_prev;
+	char			**split;
 
-	if ((e->obj = (t_vec **)malloc(sizeof(t_vec *) * e->t_y)) == NULL)
-		malloc_error();
-	str_split = ft_strsplit(raw->data, ' ');
-	while (str_split[e->t_x] != 0)
-		++e->t_x;
-	while (e->t_y-- > 0)
-		if ((e->obj[e->t_y] = (t_vec *)malloc(sizeof(t_vec) * e->t_x)) == NULL)
-			malloc_error();	
-	e->t_y = 0;
-	while (raw->next != NULL)
+	(!(r_prev = (t_obj *)malloc(sizeof(t_obj)))) ? malloc_error() : NULL;
+	t_prev = r_prev;
+	split = ft_strsplit(line, ' ');
+	while (split[conf->pos.x])
 	{
-		printf("raw =>\t\"\x1b[35m%s\x1b[0m\"\n", raw->data);
-		e->t_x = 0;
-		str_split = ft_strsplit(raw->data, ' ');
-		printf("\t\t\x1b[32mOK\x1b[0m  (AFTER STR_SPLIT INIT)\n");
-		while (str_split[e->t_x] != 0)
-		{
-			e->obj[e->t_y][e->t_x].x = e->t_x;
-			e->obj[e->t_y][e->t_x].y = e->t_y;
-			e->obj[e->t_y][e->t_x].z = ft_atoi(str_split[e->t_x]);
-			++e->t_x;
-		}
-		printf("\t\t\x1b[32mOK\x1b[0m  (AFTER LOOP STR_SPLIT)\n");
-		++e->t_y;
-		(raw->next == NULL) ? printf("\t\tRAW->NEXT (\x1b[34mNULL\x1b[0m)\n") : printf("\t\tRAW->NEXT (\x1b[33mNOT NULL\x1b[0m)\n");
-		raw = raw->next;
-		printf("RAW = RAW->NEXT\n");
-		printf("\t\t\x1b[32mOK\x1b[0m  (AFTER RAW->NEXT)\n");
-		(raw == NULL) ? printf("\t\tRAW (\x1b[34mNULL\x1b[0m)\n") : printf("\t\tRAW (\x1b[33mNOT NULL\x1b[0m)\n");
-		if (raw == NULL)
-			(raw->data == NULL) ? printf("\t\tRAW->DATA (\x1b[34mNULL\x1b[0m)\n") : printf("\t\tRAW->DATA (\x1b[33mNOT NULL\x1b[0m)\n");
+		if (!(*prev))
+			((*(obj)))->p_vertex = NULL;
 		else
-		{
-			(raw != NULL) ?  printf("\t\tRAW->DATA (\x1b[34mNOT NULL\x1b[0m)\n") : printf("\t\tRAW->DATA (\x1b[33mNULL\x1b[0m)\n");
-			(raw->next == NULL) ? printf("\t\tRAW->NEXT (\x1b[34mNULL\x1b[0m)\n") : printf("\t\tRAW->NEXT (\x1b[33mNOT NULL\x1b[0m)\n");
-		}
+			((*(obj)))->p_vertex = ((*(prev)));
+		((*(obj)))->c_vertex.x = conf->pos.x;
+		((*(obj)))->c_vertex.y = conf->pos.y;
+		((*(obj)))->c_vertex.z = ft_atoi(split[conf->pos.x++]);
+		t_prev->c_vertex = ((*(obj)))->c_vertex;
+		if (!(((*(obj)))->next = (t_obj *)malloc(sizeof(t_obj))))
+			malloc_error();
+		(!(t_prev->next = (t_obj *)malloc(sizeof(t_obj)))) ? malloc_error() : 0;
+		((*(obj))) = ((*(obj)))->next;
+		t_prev = t_prev->next;
+		(!(!((*(prev))))) ? ((*(prev))) = ((*(prev)))->next : NULL;
 	}
-	printf("\t\t\x1b[32mOK\x1b[0m  (AFTER LOOP RAW)\n");
+	return (r_prev);
 }
 
-void				read_obj(t_params *e, char *path)
+void				read_obj(t_conf *conf, char *path)
 {
 	int				fd;
-	char			*line;
 	int				err;
-	t_raw			*raw;
-	t_raw			*tmp;
+	t_obj			*prev;
+	t_obj			*tmp;
+	char			*line;
 
-	e->t_y = 0;
-	e->t_x = 0;
+	conf->pos.y = 0;
+	prev = NULL;
 	if ((fd = open(path, O_RDONLY)) == -1)
 		open_error();
-	if ((raw = (t_raw *)malloc(sizeof(t_raw))) == NULL)
+	if (!(conf->obj = (t_obj *)malloc(sizeof(t_obj))))
 		malloc_error();
-	tmp = raw;
+	tmp = conf->obj;
 	while ((err = get_next_line(fd, &line)) > 0)
 	{
-		gnl_error(err);
-		++e->t_y;
-		tmp->data = line;
-		if ((tmp->next = (t_raw *)malloc(sizeof(t_raw))) == NULL)
-			malloc_error();
-		tmp = tmp->next;
+		conf->pos.x = 0;
+		prev = save_vertices(conf, &prev, line, &tmp);
+		++conf->pos.y;
 	}
 	tmp->next = NULL;
-	(tmp->next == NULL) ? printf("\t\t\x1b[32mOK\x1b[0m (TMP->NEXT == NULL)\n") : printf("\t\t\x1b[31mKO\x1b[0m (TMP->NEXT == NULL)\n");
-	printf("TMP = TMP->NEXT\n");
-	tmp = tmp->next;
-	(tmp == NULL) ? printf("\t\t\x1b[32mOK\x1b[0m (TMP == NULL)\n") : printf("\t\t\x1b[31mKO\x1b[0m (TMP == NULL)\n");
+	gnl_error(err);
 	close(fd);
-	save_vec(e, raw);
-	free(tmp);
-	free(raw);
 }
 
-t_vec				obj_to_iso(t_params *e, t_vec vertex)
+t_vec3				iso(t_conf conf, t_vec3 vertex)
 {
-	t_vec			ret;
+	t_vec3			ret;
 
-	ret.x = vertex.x * e->zoom - vertex.y * e->zoom;
-	ret.y = vertex.y * e->zoom - cos(30 * M_PI / 180) * (vertex.z * e->alt) +
-				sin(30 * M_PI / 180) * (vertex.z * e->alt);
-	ret.x += e->offset.x;
-	ret.y += e->offset.y;
+	ret.x = vertex.x * conf.zoom - vertex.y * conf.zoom;
+	ret.y = vertex.y * conf.zoom - cos(30 * M_PI / 180) *
+	(vertex.z * conf.alt) + sin(30 * M_PI / 180) * (vertex.z * conf.alt);
+	ret.x += conf.offset.x;
+	ret.y += conf.offset.y;
 	return (ret);
+}
+
+int					get_color(t_vec3 a, t_vec3 b)
+{
+	if (a.z <= -1 || b.z <= -1)
+	{
+		if (a.z <= -6 || b.z <= -3)
+		{
+			if (a.z <= -12 || b.z <= -12)
+				return (0x002C4C);
+			return (0x20647F);
+		}
+		return (0x468499);
+	}
+	if (a.z >= 1 || b.z >= 1)
+	{
+		if (a.z >= 10 || b.z >= 10)
+		{
+			if (a.z >= 12 || b.z >= 12)
+				return (0xFFFFFF);
+			return (0x696969);
+		}
+		return (0x53802D);
+	}
+	return (0x6F502C);
 }

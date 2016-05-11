@@ -6,7 +6,7 @@
 #    By: ldubos <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/01/20 10:21:26 by ldubos            #+#    #+#              #
-#    Updated: 2016/04/23 08:24:06 by ldubos           ###   ########.fr        #
+#    Updated: 2016/04/26 09:29:37 by ldubos           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,7 @@ SRCS=$(SRCS_DIR)main.c \
 	 $(SRCS_DIR)draw.c
 OBJS=$(SRCS:.c=.o)
 	INC_DIR=-I./includes/ -I./libft/includes/
-	LIB_DIR=-L./libft -lft -L./minilibx $(MLX)
+	LIB_DIR=-L./libft -lft $(MLX)
 	LIB_MAKE=libft/
 
 all		: $(NAME)

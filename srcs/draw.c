@@ -6,14 +6,13 @@
 /*   By: ldubos <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/20 14:56:59 by ldubos            #+#    #+#             */
-/*   Updated: 2016/04/23 09:49:45 by ldubos           ###   ########.fr       */
+/*   Updated: 2016/04/26 10:08:57 by ldubos           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
-#include <stdio.h>
 
-void				put_pixel(t_img *img, t_vec p, int color)
+void				put_pixel(t_img *img, t_vec2 p, int color)
 {
 	char			*pixel;
 
@@ -26,10 +25,10 @@ void				put_pixel(t_img *img, t_vec p, int color)
 	}
 }
 
-void				draw_line_pta(t_img *img, t_vec a, t_vec b,
+void				draw_line_pta(t_img *img, t_vec3 a, t_vec3 b,
 		int color)
 {
-	t_vec			p;
+	t_vec2			p;
 
 	p.x = a.x;
 	while (p.x < b.x)
@@ -40,10 +39,10 @@ void				draw_line_pta(t_img *img, t_vec a, t_vec b,
 	}
 }
 
-void				draw_line_ptb(t_img *img, t_vec a, t_vec b,
+void				draw_line_ptb(t_img *img, t_vec3 a, t_vec3 b,
 		int color)
 {
-	t_vec			p;
+	t_vec2			p;
 
 	p.y = a.y;
 	while (p.y < b.y)
@@ -52,50 +51,47 @@ void				draw_line_ptb(t_img *img, t_vec a, t_vec b,
 		put_pixel(img, p, color);
 		++p.y;
 	}
-
 }
 
-void				draw_line(t_params *e, t_vec a, t_vec b, int color)
+void				draw_line(t_conf *conf, t_vec3 a, t_vec3 b, int color)
 {
-	t_vec			p;
+	t_vec2			p;
 
 	p.x = a.x - b.x;
 	p.y = a.y - b.y;
-	if (p.x < 0)
-		p.x = -p.x;
-	if (p.y < 0)
-		p.y = -p.y;
+	p.x < 0 ? p.x = -p.x : p.x;
+	p.y < 0 ? p.y = -p.y : p.y;
 	if (p.x > p.y)
+	{
 		if (a.x <= b.x)
-			draw_line_pta(&e->img, a, b, color);
+			draw_line_pta(&conf->img, a, b, color);
 		else
-			draw_line_pta(&e->img, b, a, color);
+			draw_line_pta(&conf->img, b, a, color);
+	}
 	else
+	{
 		if (a.y < b.y)
-			draw_line_ptb(&e->img, a, b, color);
+			draw_line_ptb(&conf->img, a, b, color);
 		else
-			draw_line_ptb(&e->img, b, a, color);
+			draw_line_ptb(&conf->img, b, a, color);
+	}
 }
 
-void				draw_obj(t_params *e)
+void				draw_obj(t_conf conf)
 {
-	int				x;
-	int				y;
+	t_obj			*tmp;
 
-	y = 0;
-	while (y < e->t_y)
+	tmp = conf.obj;
+	while (tmp != NULL)
 	{
-		x = 0;
-		while (x < e->t_x)
-		{
-			if (x + 1 <= e->t_x)
-				draw_line(e, obj_to_iso(e, e->obj[y][x]),
-					obj_to_iso(e, e->obj[y][x + 1]), 0xFFFFFF);
-			if (y - 1 >= 0)
-				draw_line(e, obj_to_iso(e, e->obj[y][x]),
-					obj_to_iso(e, e->obj[y - 1][x]), 0xFF5555);
-			++x;
-		}
-		++y;
+		if (tmp->c_vertex.y != 0)
+			draw_line(&conf, iso(conf, tmp->c_vertex),
+			iso(conf, tmp->p_vertex->c_vertex),
+			get_color(tmp->c_vertex, tmp->p_vertex->c_vertex));
+		if (tmp->next != NULL && tmp->next->c_vertex.y == tmp->c_vertex.y)
+			draw_line(&conf, iso(conf, tmp->c_vertex),
+			iso(conf, tmp->next->c_vertex),
+			get_color(tmp->c_vertex, tmp->next->c_vertex));
+		tmp = tmp->next;
 	}
 }
