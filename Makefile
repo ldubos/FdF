@@ -10,7 +10,7 @@
 #                                                                              #
 # **************************************************************************** #
 
-export CFLAGS=#-Wall -Wextra -Werror
+export CFLAGS=-Wall -Wextra -Werror
 NAME=fdf
 MLX=-lmlx -framework OpenGL -framework AppKit
 SRCS_DIR=srcs/

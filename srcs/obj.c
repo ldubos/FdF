@@ -61,6 +61,7 @@ void				read_obj(t_conf *conf, char *path)
 	{
 		conf->pos.x = 0;
 		prev = save_vertices(conf, &prev, line, &tmp);
+		square_error(conf, conf->pos.x);
 		++conf->pos.y;
 	}
 	tmp->next = NULL;

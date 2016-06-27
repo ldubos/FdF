@@ -74,9 +74,7 @@ typedef struct		s_conf
 	int				alt;
 	int				width;
 	int				height;
-	int				wave;
-	int				wave_s;
-	int				wave_m;
+	int				m_width;
 }					t_conf;
 
 /*
@@ -84,9 +82,15 @@ typedef struct		s_conf
 */
 
 void				arg_error(int ac);
-void				open_error();
+void				open_error(void);
 void				gnl_error(int err);
-void				malloc_error();
+void				malloc_error(void);
+
+/*
+** error_2.c
+*/
+
+void				square_error(t_conf *conf, int current);
 
 /*
 ** obj.c

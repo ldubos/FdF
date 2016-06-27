@@ -25,6 +25,7 @@ void				init_conf(t_conf *conf)
 	conf->wave = 0;
 	conf->wave_s = 0;
 	conf->wave_m = 0;
+	conf->m_width = -1;
 }
 
 int					main(int ac, char **av)

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   error.c                                            :+:      :+:    :+:   */
+/*   error_2.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ldubos <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,32 +12,15 @@
 
 #include "fdf.h"
 
-void				arg_error(int ac)
+void				square_error(t_conf *conf, int current)
 {
-	if (ac < 2)
+	if (conf->m_width == -1)
 	{
-		ft_putendl_fd("\a\033[1;31;40mToo few arguments.\033[0m", 2);
+		conf->m_width = current;
+	}
+	else if (conf->m_width != -1 && conf->m_width != current)
+	{
+		ft_putendl_fd("\a\033[1;31;40mThis is not a square map.\033[0m", 2);
 		exit(1);
 	}
-}
-
-void				open_error(void)
-{
-	ft_putendl_fd("\a\033[1;31;40mOpen file error.\033[0m", 2);
-	exit(1);
-}
-
-void				gnl_error(int err)
-{
-	if (err < 0)
-	{
-		ft_putendl_fd("\a\033[1;31;40mRead file error.\033[0m", 2);
-		exit(1);
-	}
-}
-
-void				malloc_error(void)
-{
-		ft_putendl_fd("\a\033[1;31;40mMemory error.\033[0m", 2);
-		exit(1);
 }
