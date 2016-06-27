@@ -12,10 +12,15 @@
 
 #include "fdf.h"
 
-void				square_error(t_conf *conf, int current)
+void				square_error(t_conf *conf, int current, char *line)
 {
 	if (conf->m_width == -1)
 	{
+		if (ft_strlen(line) <= 1)
+		{
+			ft_putendl_fd("\a\033[1;31;40mThis is not a square map.\033[0m", 2);
+			exit(1);
+		}
 		conf->m_width = current;
 	}
 	else if (conf->m_width != -1 && conf->m_width != current)

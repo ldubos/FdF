@@ -90,7 +90,7 @@ void				malloc_error(void);
 ** error_2.c
 */
 
-void				square_error(t_conf *conf, int current);
+void				square_error(t_conf *conf, int current, char *line);
 
 /*
 ** obj.c
